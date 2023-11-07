@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>한국은행 금융경제 스냅샷</title>
+        <link rel="stylesheet" type="text/css" href="https://snapshot.bok.or.kr/static/css/font.css">
+        <link rel="stylesheet" type="text/css" href="https://snapshot.bok.or.kr/static/css/chart-style.css">
+    </head>
+    <body>
+        <div class="chkbox-wrap">
+            <div class="txt">선택</div>
+            <div id="chkbox" class="chkbox"></div>
+        </div>
+        <div id="container"></div>
+        <button type="button" id="pic" class="btn_pic"></button>
+        <button type="button" id="data" class="btn_data"></button>
+        <script src="https://snapshot.bok.or.kr/js/jquery.min.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/highstock.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/data.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/export-data.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/full-screen.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/accessibility.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/boost.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/exporting.js"></script>
+        <script src="https://snapshot.bok.or.kr/js/offline-exporting.js"></script>
+        <script src="https://snapshot.bok.or.kr/lang/unit_lang_ko.js" type="text/javascript"></script>
+        <script src="https://snapshot.bok.or.kr/lang/unit_lang_en.js" type="text/javascript"></script>
+        <script>
+            //2023.04.19 lang.months 의 경우 따로 적용해주어야만 적용이 된다. 공통 적용이므로 여기서 제어.
+            opt = Highcharts.getOptions();
+            opt.lang.months = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+            opt.lang.shortMonths = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+            opt.lang.weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            //opt.lang.rangeSelectorZoom = '';
+
+            const DATABASE = 'snapshot-dashboard';
+            const DB_VERSION = 2;
+            const DB_STORE_NAME = 'chart';
+
+            const chartId = window.location.href.split('=')[1];
+
+            let lang = localStorage.getItem('lang') ?? 'ko';
+            let db;
+            const url = `/api/chart/getChart?id=${chartId}`;
+            const $btn_pic = document.getElementById('pic');
+            const $btn_data = document.getElementById('data');
+
+            let chart, tmsrsIdsLst, slctUseYn, chartNm, engChartNm;
+            let seriesNames,yAxisText0, yAxisText1, seriesTypes;
+            
+            let allSeriesDatas = [],
+                defaultSeriesDatas = [];
+            //afteranimate 로 datacall 처리. series마다 실행되므로 전역으로 n회진행막음
+            let ajaxCall = false;
+            let winWidth = window.innerWidth;
+
+            const time = new Highcharts.Time();
+
+            const aftStockChart = function (){
+                
+                    yAxisText0 = chart.yAxis[0].axisTitle?.textStr.replace(/ /g,'');
+                    yAxisText1 = chart.yAxis[1].axisTitle?.textStr.replace(/ /g,'');
+                    
+                    const curSeriesNames = JSON.parse(seriesNames).map((srs) => {return {ko:srs.ko, en:srs.en}})
+                    chart.series.map((srs, i) => {
+                        let temp = curSeriesNames.filter((nm)=>nm['ko'].replace(/\s/g, "") === srs.name.replace(/\s/g, "") || nm['en'].replace(/\s/g, "") === srs.name.replace(/\s/g, ""));
+                        chart.series[i].update({
+                            name:temp[0][lang]
+                        })
+                    });
+
+                    //한영전환    
+                    if(lang === 'en' ) {
+                        if(yAxisText0 != undefined) chart.yAxis[0].setTitle({ text: ( unit_en[yAxisText0]?.txt ?? yAxisText0 ) + ( unit_en[yAxisText0]?.spaceTxt ?? "")  });
+                        if(yAxisText1 != undefined) chart.yAxis[1].setTitle({ text: ( unit_en[yAxisText1]?.spaceTxt ?? "") + ( unit_en[yAxisText1]?.txt ?? yAxisText1 )});
+                    }else{
+                        if(yAxisText0 != undefined) chart.yAxis[0].setTitle({ text: ( unit_ko[yAxisText0]?.txt ?? yAxisText0 ) + ( unit_ko[yAxisText0]?.spaceTxt ?? "")  });
+                        if(yAxisText1 != undefined) chart.yAxis[1].setTitle({ text: ( unit_ko[yAxisText1]?.spaceTxt ?? "") + ( unit_ko[yAxisText1]?.txt ?? yAxisText1 )});
+                    }
+            };
+
+            const bfStockChart = function (chartOpt){
+                //차트 생성 전 option 조정
+                if (slctUseYn === 'Y') {
+                    addCheckbox(tmsrsIdsLst);
+
+                    $.ajax({
+                        url: `/api/chart/getChartData?series=${chartOpt.series_ids}`,
+                        async: false,
+                        success: function (res) {
+                            /**
+                             * 멀티선택 => slct_use_yn : 'Y'
+                             */
+                            allSeriesDatas = [];
+                            defaultSeriesDatas = [];
+                            tmsrsIdsLst.forEach((srs, i) => {
+                                let series = {};
+                                series.name = lang==='ko' ? srs.ko : srs.en;
+                                series.data = res[i];
+                                series.id = chartId+'_'+srs.series_id;
+                                if (srs.aux === 'Y') {
+                                    series.yAxis = 1;
+                                }
+                                if (seriesTypes !== undefined) {
+                                    series.type = seriesTypes[i].type;
+                                }
+                                
+                                allSeriesDatas.push(series);
+                                if (srs.base === 'Y') {
+                                    defaultSeriesDatas.push(series);
+                                }
+                            });
+                        },
+                    });
+                    delete chartOpt.data;
+                    chartOpt.series = defaultSeriesDatas;
+                }
+
+
+                if( winWidth < 430 ){
+                    chartOpt.rangeSelector.dropdown= 'always'
+                }
+                
+                let curDateFormat = chartOpt.tooltip.xDateFormat;
+                if(curDateFormat.indexOf("|") > -1){
+                    //시계열 주기가 다른 경우
+                    chartOpt.tooltip.formatter = function () {
+                        let curDateFormat = chartOpt.tooltip.xDateFormat;
+                        let curDateFormatLst = curDateFormat.split("|");
+                        let curvalueDecimals = chartOpt.tooltip.valueDecimals;
+                        let dateList = [];
+                        let xDate = new Date(this.x);
+                        let yearStr = xDate.getFullYear();
+                        let monthStr = xDate.getMonth()+1;
+                        let dateStr = xDate.getDate();
+                        let date;
+                        curDateFormatLst.forEach( function (dateFormat, idx) {
+                            if(dateFormat ===  "Q") {
+                                date = yearStr;
+                                if(monthStr < 4) date = date + " Q1";
+                                else if(monthStr < 7) date = date + " Q2";
+                                else if(monthStr < 10) date = date + " Q3";
+                                else date = date + " Q4";
+                            }else{
+                                date = time.dateFormat(dateFormat, Date.UTC(yearStr, monthStr-1 , dateStr));
+                            }
+                            dateList[idx] = date;
+                        })
+
+                        return [''].concat(
+                            this.points ?
+                                this.points.map(function (point) {
+                                    return '<br/> <span style="color:'+ point.color +'">\u25CF </span>'+ point.series.name 
+                                    + ' : <b> '+dateList[point.series.index]+', ' 
+                                        + ( ( curvalueDecimals !== undefined && curvalueDecimals !== "") ? point.y.toFixed(curvalueDecimals) : point.y ) +'</b>';
+                                }) : []
+                        );
+
+                    }
+                    
+
+                }else{
+                    //시계열 모두 주기가 같은 경우
+                    if(curDateFormat ===  "Q") {
+                        chartOpt.tooltip.formatter = function () {
+                                    let curvalueDecimals = chartOpt.tooltip.valueDecimals;
+                                    let date;
+                                    let xDate = new Date(this.x);
+                                    //if(curDateFormat ===  "Q") {
+                                    monthStr = xDate.getMonth()+1;
+                                    date = xDate.getFullYear();
+                                    if(monthStr < 4) date = date + " Q1";
+                                    else if(monthStr < 7) date = date + " Q2";
+                                    else if(monthStr < 10) date = date + " Q3";
+                                    else date = date + " Q4";
+                                    // }else{
+                                    //     date = time.dateFormat(curDateFormat, this.x);
+                                    // }
+                                    return ['<span style="font-size:10px;">'+date+'</span>'].concat(
+                                        this.points ?
+                                            this.points.map(function (point) {
+                                                return '<br/> <span style="color:'+ point.color +'">\u25CF </span>'+ point.series.name + ' : <b>' + ( ( curvalueDecimals !== undefined && curvalueDecimals !== "") ? point.y.toFixed(curvalueDecimals) : point.y ) +'</b>';
+                                            }) : []
+                                    );
+                        }
+                    }
+                }
+                
+                return chartOpt;
+            };
+
+            const callData = function (gb, getReq) {
+                if (!ajaxCall) {
+                    ajaxCall = true;
+                    $.ajax({
+                        url: url,
+                        async: false,
+                        success: function (res) {
+                            if (gb == 'suc') {
+                                if ( JSON.stringify(res.data) !== JSON.stringify(getReq.result ?? []) ) {
+                                    let store = db
+                                        .transaction(DB_STORE_NAME, 'readwrite')
+                                        .objectStore(DB_STORE_NAME);
+                                    let putReq = store.put(res.data, chartId);
+                                    putReq.addEventListener(
+                                        'success',
+                                        function (event) {
+                                            db.close();
+                                            seriesNames = res.data['tmsrs_ids'];
+                                            seriesTypes = res.data['chart_opt']['series'];
+                                            slctUseYn = res.data['slct_use_yn'];
+                                            chartNm = res.data['chart_nm'];
+                                            engChartNm = res.data['eng_chart_nm'];
+                                            tmsrsIdsLst = JSON.parse(res.data['tmsrs_ids']);
+                                            let data = JSON.parse(JSON.stringify(res.data['chart_opt']));
+                                            data = bfStockChart(data);
+                                            chart = Highcharts.stockChart('container', data);
+                                            aftStockChart();
+                                        },
+                                    );
+                                } else {
+                                    db.close();
+                                }
+                            } else {
+                                seriesNames = res.data['tmsrs_ids'];
+                                seriesTypes = res.data['chart_opt']['series'];
+                                slctUseYn = res.data['slct_use_yn'];
+                                chartNm = res.data['chart_nm'];
+                                engChartNm = res.data['eng_chart_nm'];
+                                tmsrsIdsLst = JSON.parse(res.data['tmsrs_ids']);
+                                let data = bfStockChart(res.data['chart_opt']);
+                                chart = Highcharts.stockChart('container', data);
+                                aftStockChart();
+                            }
+                        },
+                    });
+                }
+            };
+            const addCheckbox = (tmsrsIds) => {
+                let chkbox = document.querySelector('.chkbox')
+                chkbox.innerHTML= '';
+                
+                tmsrsIds.forEach((srs) => {
+                    if (srs.base) {
+                        $('.chkbox').append(
+                            `<div><input id="${chartId+'_'+srs.series_id}" data-ko="${srs.ko}" data-en="${srs.en}" type="checkbox" value="${chartId+'_'+srs.series_id}" checked/><label for="${chartId+'_'+srs.series_id}">${srs.ko}</label></div>`,
+                        );
+                    } else {
+                        $('.chkbox').append(
+                            `<div><input id="${chartId+'_'+srs.series_id}" data-ko="${srs.ko}" data-en="${srs.en}" type="checkbox" value="${chartId+'_'+srs.series_id}" /><label for="${chartId+'_'+srs.series_id}">${srs.ko}</label></div>`,
+                        );
+                    }
+                });
+            };
+
+            function onChangeSeries(target, gb) {
+                document.querySelector('.highcharts-range-selector-group').style.visibility = 'visible';
+                let axisTit = document.querySelectorAll('.highcharts-axis-title');
+                for (let index = 0; index < axisTit.length; index++) {
+                    axisTit[index].style.visibility = 'visible';
+                    
+                }
+                if(typeof(target) === 'string'){
+                    const $this = document.getElementById(target);
+                    const chartIdx = chart.series.findIndex((i) => i.userOptions.id === $this.value);
+                    const idx = allSeriesDatas.findIndex((i) => i.id === $this.value);
+                    if ($this.checked) {
+                        if (chartIdx < 0) {
+                            chart.addSeries({
+                                name: $this.dataset[lang],
+                                data: allSeriesDatas[idx].data,
+                                yAxis: allSeriesDatas[idx].yAxis,
+                                id:allSeriesDatas[idx].id,
+                                type:allSeriesDatas[idx].type
+                            });
+                        }
+                    } else {
+                        chart.series[chartIdx].remove();
+                    }
+                    chart.yAxis[1].update({ linkedTo: 0 });//기본축(주축)복제
+                    chart.series.forEach((o) => {
+                        if (o.userOptions.yAxis) {
+                            chart.yAxis[1].update({ linkedTo: undefined }); //보조축시리즈가 있을 경우 기본축 연결해제
+                            return;
+                        }
+                    });
+                }else if(typeof(target) === 'object'){
+                    let newArray = allSeriesDatas.filter((srs) => target.some((srs2) => srs.id === srs2.id));
+                    if(gb === 'add') {//전체선택(append)
+                        newArray.forEach((srs) => {
+                            let $this = document.getElementById(srs.id);
+                            chart.addSeries({
+                                name: $this.dataset[lang],
+                                data: srs.data,
+                                yAxis: srs.yAxis,
+                                id:srs.id,
+                                type:srs.type
+                            }, false);
+                        });
+                    } else { // 전체해제
+                        while(chart.series.length > 0){
+                            chart.series[0].remove(false) //false = don't redraw
+                        }
+                    }
+                    chart.redraw();
+                }
+                if(chart.series.length === 0) {
+                    document.querySelector('.highcharts-range-selector-group').style.visibility = 'hidden';
+                    for (let index = 0; index < axisTit.length; index++) {
+                        axisTit[index].style.visibility = 'hidden';
+                        
+                    }
+                }
+            }
+
+            
+            const dbReq = indexedDB.open(DATABASE, DB_VERSION);
+            dbReq.onsuccess = function (event) {
+                db = dbReq.result;
+                let store = db
+                    .transaction(DB_STORE_NAME, 'readonly')
+                    .objectStore(DB_STORE_NAME);
+                let getReq = store.get(chartId);
+                getReq.addEventListener('success', function (event) {
+                    if (getReq.result?.chart_opt) {
+                        seriesNames = getReq.result.tmsrs_ids;
+                        seriesTypes = getReq.result.chart_opt.series;
+                        let data = JSON.parse(JSON.stringify(getReq.result.chart_opt));
+
+                        //afteranimate 로 datacall 처리
+                        if (data?.plotOptions?.series) {
+                            data.plotOptions.series.events = {
+                                afterAnimate: function () {
+                                    callData('suc', getReq);
+                                }
+                            };
+                            
+                        }else if(data?.plotOptions){
+                            data.plotOptions.series = {
+                                events : {
+                                    afterAnimate: function () {
+                                        callData('suc', getReq);            
+                                    }
+                                }
+                            };    
+                        } else {
+                            data.plotOptions = {
+                                series: {
+                                    events : {
+                                        afterAnimate: function () {
+                                            callData('suc', getReq);            
+                                        }
+                                    }
+                                }
+                            };
+                        };
+
+                        //afteranimate가 실행안되는 경우가 있어(차트옵션오류/멀티차트설정) load 후 5초 후 calldata 무조건 호출되도록 함
+                        if (data?.chart) {
+                            data.chart.events =  {
+                                                        load: function () {
+                                                            setTimeout(() => callData('suc', getReq), 5000);
+                                                        }
+                                                    };
+                        }
+                        //boostThreshold, turboThreshold가 둘다 1인 경우 성능문제 발생.
+                        let boostThreshold = data.plotOptions.series.boostThreshold ?? '' ;
+                        let turboThreshold = data.plotOptions.series.turboThreshold ?? '' ;
+                        if(boostThreshold == 1 && turboThreshold == 1) {
+                            data.plotOptions.series.boostThreshold = 5000; //default
+                            data.plotOptions.series.turboThreshold = 1000; //default
+                        }
+                        slctUseYn = getReq.result.slct_use_yn;
+                        chartNm = getReq.result.chart_nm;
+                        engChartNm = getReq.result.eng_chart_nm;
+                        tmsrsIdsLst = JSON.parse(getReq.result.tmsrs_ids);
+                        data = bfStockChart(data);
+                        chart = Highcharts.stockChart('container', data);
+                        aftStockChart();
+                    } else {
+                        callData('suc', []);
+                    }
+                });
+            };
+            dbReq.onerror = function (event) {
+                callData('err', '');
+            };
+            dbReq.onupgradeneeded = function (event) {
+                db = event.target.result;
+                let oldVersion = event.oldVersion;
+                if (oldVersion < 1) {
+                    db.createObjectStore(DB_STORE_NAME);
+                }
+            };
+            $btn_pic.addEventListener('click', function () {
+                chart.exportChartLocal({
+                    fallbackToExportServer: false,
+                    sourceWidth: 600,
+                    sourceHeight: 400,
+                    scale: 2,
+                    filename : lang !== 'en' ? chartNm : engChartNm
+                });
+            });
+            $btn_data.addEventListener('click', function () {
+                chart.downloadCSV();
+            });
+            
+            window.addEventListener( 'message', function( e ) {
+                if(typeof(e.data) !== 'string') return;
+                lang = e.data;
+                if(seriesNames != undefined){
+                    const curSeriesNames = JSON.parse(seriesNames).map((srs) => {return {ko:srs.ko, en:srs.en}})
+                    chart.series.map((srs, i) => {
+                        let temp = curSeriesNames.filter((nm)=>nm['ko'] === srs.name || nm['en'] === srs.name);
+                        chart.series[i].update({
+                            name:temp[0][lang]
+                        })
+                    });
+                    //chart.yAxis[0].axisTitle.textStr
+                    if(lang === 'en'){
+                        if(yAxisText0 != undefined) chart.yAxis[0].setTitle({ text: ( unit_en[yAxisText0]?.txt ?? yAxisText0 ) + ( unit_en[yAxisText0]?.spaceTxt ?? "")  });
+                        if(yAxisText1 != undefined) chart.yAxis[1].setTitle({ text: ( unit_en[yAxisText1]?.spaceTxt ?? "") + ( unit_en[yAxisText1]?.txt ?? yAxisText1 )});
+                    }else{
+                        if(yAxisText0 != undefined) chart.yAxis[0].setTitle({ text: ( unit_ko[yAxisText0]?.txt ?? yAxisText0 ) + ( unit_ko[yAxisText0]?.spaceTxt ?? "")  });
+                        if(yAxisText1 != undefined) chart.yAxis[1].setTitle({ text: ( unit_ko[yAxisText1]?.spaceTxt ?? "") + ( unit_ko[yAxisText1]?.txt ?? yAxisText1 )});
+                    }
+                }
+                
+                
+            });
+
+            ///20230517 노건혜 resize event 추가
+            window.addEventListener( 'resize', function( e ) {
+                if(winWidth != window.innerWidth){
+                    if( window.innerWidth < 430 && winWidth >= 430 ){
+                        //변경사이즈가 430보다 작은 경우 
+                        chart.update({
+                            rangeSelector: { 'dropdown' : 'always' }
+                        });
+                    }else if( window.innerWidth >= 430 && winWidth < 430 ){
+                        //변경사이즈가 430보다 큰 경우 
+                        chart.update({
+                            rangeSelector: { 'dropdown' : 'never' }
+                        });                        
+                    }
+                    winWidth =  window.innerWidth;
+                }
+            });            
+        </script>
+    </body>
+</html>
