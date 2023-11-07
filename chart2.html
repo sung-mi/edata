@@ -32,7 +32,9 @@ const names = ['MSFT', 'AAPL', 'GOOG'];
 function createChart(series) {
 
     Highcharts.stockChart('container', {
-
+        legend: {
+            enabled : true
+    },
         rangeSelector: {
             selected: 4
         },
