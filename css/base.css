@@ -3,8 +3,8 @@
 /*  Version : 1.0
 /*  Author : jsm
 /****************************************/
-@font-face{font-family:'NotoS'; src:url('./fonts/NotoSansCJKkr-Regular.woff')}
-@font-face{font-family:'notoSB'; src:url('./fonts/NotoSansCJKkr-Bold.woff')}
+@font-face{font-family:'NotoS'; src:url('./font/NotoSansCJKkr-Regular.woff')}
+@font-face{font-family:'notoSB'; src:url('./font/NotoSansCJKkr-Bold.woff')}
 
 html{font-size:10px;-ms-overflow-style: scrollbar;-webkit-tap-highlight-color: transparent;scroll-behavior:smooth}
 body{line-height:1.4}
