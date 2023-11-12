@@ -32,6 +32,9 @@ const names = ['MSFT', 'AAPL', 'GOOG'];
 function createChart(series) {
 
     Highcharts.stockChart('container', {
+        credits : {
+        enabled : false
+    },
         legend: {
             enabled : true
     },

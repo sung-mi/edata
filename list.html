@@ -5,37 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>지역경제활동 데이터 플랫폼</title>
     <link rel="stylesheet" href="./css/common.css">
-    <style>
-      .header_sub_top{display:flex;margin:3rem 2rem;align-items: center;justify-content: space-between;}
-.header_sub_top>.logo{flex:0 34rem;    font-size: 2.6rem;
-    line-height: 120%;
-    max-width: 350px;
-    width: 100%;
-    word-break: keep-all;}
-.header_sub_top>.inp_srh{flex:0 calc(100% - 40rem);    margin: 0;
-    position: relative;
-}
-.header_sub_top>.inp_srh>input{border: 1px solid #a7a7a7;
-    border-radius: 15px;
-    font-size: 17px;
-    height: 48px;
-    padding: 0 50px 0 15px;
-    width: 100%;}
-.header_sub_top>.inp_srh>button {background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAA2CAYAAACMRWrdAAAAAXNSR0IArs4c6QAABLZJREFUaEPdWk1yE0cU/p7aVIlFCnICxAmQVyyRT4CzTVkgnwCxYiALi00yrBC5QATyHvkEQNapwhwgFXMDa5cKlh71ZlpipOnu6Z4ZWyi9kcvV/Xq+fq+/99eEGgY/67Uxv7gPpjYIN7XITvLLOAfhVP/vDMynoJ0TikdnNWxtFUFlhXN00AHoIQAB0Coh5wyMCYhPKD5+X2K9c0kwMA3oSAOq63veA+qwTi16A+Oo1wJmf9QMaP1gRoB6XgdAL2AcdXtgvMzcn7o0lZcjd1KpPfp1tLiXpfYqBMbRwRFAg1LSqy06pHg8KivCCowHvZv4d/YSQM9T+AcQJgnrAVgQQirnop3KaHQA3gdwx1PmiOLxoefclWl2YFFX7lMRqCmAPppqQoPRue8HpGDnfYD7AG6419Erit/IvKBhBMbRgwHAwny2MQVoiGZjGAJoXVgGoGsvWRZsljlgCVEAoi3b+IyG2q96ubPCUwc/E19m115D7YbsuQIsoXSefXSw3yc0VaeKlmynpd3JxHr/hC2vq9u+e68B675z+KlPFI81CQSZu/dkTViiOQu58GuKj4vufbLfEpiOKASYaXxGU7V9T8sbiWGi1pwwq8Us1W0fB54BZtXWFA3VCbHvKsBkrfuQ/bSWAHMLoucUv7lyB83RwUgH2flz8iCSBTCbkCmaqnUVJphzBWlsajZJwmP6bTx0WYYG1v3HknoE+4+qZrjiBmz+lPmUXhzvOoFpH/LROKmpftyEthbfUuXbyBFlfKB4nGbBGxwcdSXTvmX4BKc1EUddcYr3cws97Pgq8HL0YAjwo/xeblITYOIQ7+UX8t5lpOyhh8FPu/0kF8wNN+1//8DS2oopcHBeFQHGplOkeFyYhIaefpn5Dh+75cDSyN/E2s7YVTQmCWI+Ltsw1S8pv4Ipft/k8b8FZmVFd8mA7MHmZoLffMxoC4aL/JjtRDzisTIsF7qGo3JxLFWJx0I/MnR+lW9bRPeWeGyz5ujIyQrjWA3MEo8FFlBCNeKar0sEkk4ZwkTvfMwatkhZZDMZ9JPuWxCkamwYxXWPbM3D4s+kMh1W06uqOXdtM6DmIR/ivKhJV1Lt+lSHKoNKQ6g/AfxgkOVdqlirKzoKKNJsuL6zd5kZNf/y8y3M1N8AlPmA/K9FvhJsK6Akak36xz9dhua0xfxlB4Wg2qahdu8iEt0sr6Exl9WIvlO/W8xPpv6HhrobUtu0dFsKGxOyWeW2qqZ06bT4lK2DemWO/pjjvi1zCiEVHqKxcxJymtrspI7hAyirXG9wzizZXkgxXu30eUODTgFO33CQmoJnaa435zaIpKlR9vnEYlMvcIXpv0e/rCrDm9Z/AXDNIbgQXCGwjI9zN+bqg5c0FjG/6Ftr9+leTnBewBJwaZN8WLBZFXi59q+zMVEAzhvYki+SZsHFoF6A/BrNnb7J+ZcFFwxsCVBCH551wAmz+T5vyGpUP59QkyKHXwZcaWArDjZ9E7IPUAuYt9LfZMhLOP1MQthS/uaz0OcTyVVw9csMZlkLsCoXK2RtMbhvBZ6tAualOV0P3TpgheC2GZgd3Bab4gpprfTOVguoW2mKOUaWsHTtkdrWA7Ox6le38WJVJgDCPQAAAABJRU5ErkJggg==) no-repeat 50%;
-    background-size: 27px;
-    border: none;
-    height: 48px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 48px;
-}
-
-    </style>
+    <script src="./js/jquery-1.11.2.min.js"></script>
 </head>
-<body>
+<body class="sub_bg">
     <div class="wrap">
-        <section class="header">
+        <section class="header sub_h">
             <div class="header_sub_top">
                 <a class="logo" href="index.html">지역경제활동 <strong class="fB">데이터 플랫폼</strong></a>
                 <span class="inp_srh">
@@ -44,8 +18,123 @@
                 </span>
             </div>
         </section>
-        <section class="container">
-   
+        <section class="container sub_c">
+          <div class="sub_inner">
+            <div class="lnb">
+              <h3 class="fB">지역경제</h3>
+              <ul>
+                <li>
+                  <a href="javascript:void(0)"  onclick="$('#subTit').text('인구')">인구</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                  <div class="sub_lnb">
+                      <a href="javascript:void(0)" onclick="$('#subTit').text('인구 구조 및 동향')">인구 구조 및 동향</a>
+                      <a href="javascript:void(0)" onclick="$('#subTit').text('이동 및 변화')">이동 및 변화</a>
+                      <a href="javascript:void(0)" onclick="$('#subTit').text('출생 및 사망')">출생 및 사망</a>
+                      <a href="javascript:void(0)" onclick="$('#subTit').text('특정 인구 집단')">특정 인구 집단</a>
+                      <a href="javascript:void(0)" onclick="$('#subTit').text('혼인')">혼인</a>
+                  </div>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('가족')">가족</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                  <div class="sub_lnb">
+                    <a href="javascript:void(0)" onclick="$('#subTit').text('가구 및 생활 구조')">가구 및 생활 구조</a>
+                    <a href="javascript:void(0)" onclick="$('#subTit').text('혼인 및 이혼')">혼인 및 이혼</a>
+                    <a href="javascript:void(0)" onclick="$('#subTit').text('생활 만족도 및 여건 변화')">생활 만족도 및 여건 변화</a>
+                  </div>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('건강')">건강</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('교육')">교육</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('소득과 소비')">소득과 소비</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('고용과 노동')">고용과 노동</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('주거와 교통')">주거와 교통</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('문화와 여가')">문화와 여가</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('성장과 안정')">성장과 안정</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('안전')">안전</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('환경')">환경</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" onclick="$('#subTit').text('사회통합')">사회통합</a>
+                  <button type="button" onclick="$(this).parent().toggleClass('active')"></button>
+                </li>
+              </ul>
+            </div>
+            <div class="contents sub_con">
+              <h4 class="sub_tit"><strong id="subTit">인구</strong></h4>
+              <ul class="cht_list">
+                <li>
+                  <div class="cht_h">
+                    <strong>고령인구비율</strong>
+                    <div class="controller">
+                      <button type="button" class="btn_enlarge" title="그래프 확대">그래프 확대</button>
+                      <button type="button" class="btn_csv" title="데이터 다운로드">데이터 다운로드</button>
+                      <button type="button" class="btn_pic" title="이미지 저장">이미지 저장</button>
+                    </div>
+                  </div>
+                  <div class="cht_con"><iframe src="chart1.html" scrolling="no"></iframe></div>
+                </li>
+                <li>
+                  <div class="cht_h">
+                    <strong>남녀성비</strong>
+                    <div class="controller">
+                      <button type="button" class="btn_enlarge" title="그래프 확대">그래프 확대</button>
+                      <button type="button" class="btn_csv" title="데이터 다운로드">데이터 다운로드</button>
+                      <button type="button" class="btn_pic" title="이미지 저장">이미지 저장</button>
+                    </div>
+                  </div>
+                  <div class="cht_con"><iframe src="chart2.html" scrolling="no"></iframe></div>
+                </li>
+                <li>
+                  <div class="cht_h">
+                    <strong>노령화지수</strong>
+                    <div class="controller">
+                      <button type="button" class="btn_enlarge" title="그래프 확대">그래프 확대</button>
+                      <button type="button" class="btn_csv" title="데이터 다운로드">데이터 다운로드</button>
+                      <button type="button" class="btn_pic" title="이미지 저장">이미지 저장</button>
+                    </div>
+                  </div>
+                  <div class="cht_con"><iframe src="chart1.html" scrolling="no"></iframe></div>
+                </li>
+                <li>
+                  <div class="cht_h">
+                    <strong>인구증가율</strong>
+                    <div class="controller">
+                      <button type="button" class="btn_enlarge" title="그래프 확대">그래프 확대</button>
+                      <button type="button" class="btn_csv" title="데이터 다운로드">데이터 다운로드</button>
+                      <button type="button" class="btn_pic" title="이미지 저장">이미지 저장</button>
+                    </div>
+                  </div>
+                  <div class="cht_con"><iframe src="chart2.html" scrolling="no"></iframe></div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
         <section class="footer">Copyright Statistics Korea. All rights reserved.</section>
     </div>
