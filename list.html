@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지역경제활동 데이터 플랫폼</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <style>
+      .header_sub_top{display:flex;margin:3rem 2rem;align-items: center;justify-content: space-between;}
+.header_sub_top>.logo{flex:0 34rem;    font-size: 2.6rem;
+    line-height: 120%;
+    max-width: 350px;
+    width: 100%;
+    word-break: keep-all;}
+.header_sub_top>.inp_srh{flex:0 calc(100% - 40rem);    margin: 0;
+    position: relative;
+}
+.header_sub_top>.inp_srh>input{border: 1px solid #a7a7a7;
+    border-radius: 15px;
+    font-size: 17px;
+    height: 48px;
+    padding: 0 50px 0 15px;
+    width: 100%;}
+.header_sub_top>.inp_srh>button {background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADYAAAA2CAYAAACMRWrdAAAAAXNSR0IArs4c6QAABLZJREFUaEPdWk1yE0cU/p7aVIlFCnICxAmQVyyRT4CzTVkgnwCxYiALi00yrBC5QATyHvkEQNapwhwgFXMDa5cKlh71ZlpipOnu6Z4ZWyi9kcvV/Xq+fq+/99eEGgY/67Uxv7gPpjYIN7XITvLLOAfhVP/vDMynoJ0TikdnNWxtFUFlhXN00AHoIQAB0Coh5wyMCYhPKD5+X2K9c0kwMA3oSAOq63veA+qwTi16A+Oo1wJmf9QMaP1gRoB6XgdAL2AcdXtgvMzcn7o0lZcjd1KpPfp1tLiXpfYqBMbRwRFAg1LSqy06pHg8KivCCowHvZv4d/YSQM9T+AcQJgnrAVgQQirnop3KaHQA3gdwx1PmiOLxoefclWl2YFFX7lMRqCmAPppqQoPRue8HpGDnfYD7AG6419Erit/IvKBhBMbRgwHAwny2MQVoiGZjGAJoXVgGoGsvWRZsljlgCVEAoi3b+IyG2q96ubPCUwc/E19m115D7YbsuQIsoXSefXSw3yc0VaeKlmynpd3JxHr/hC2vq9u+e68B675z+KlPFI81CQSZu/dkTViiOQu58GuKj4vufbLfEpiOKASYaXxGU7V9T8sbiWGi1pwwq8Us1W0fB54BZtXWFA3VCbHvKsBkrfuQ/bSWAHMLoucUv7lyB83RwUgH2flz8iCSBTCbkCmaqnUVJphzBWlsajZJwmP6bTx0WYYG1v3HknoE+4+qZrjiBmz+lPmUXhzvOoFpH/LROKmpftyEthbfUuXbyBFlfKB4nGbBGxwcdSXTvmX4BKc1EUddcYr3cws97Pgq8HL0YAjwo/xeblITYOIQ7+UX8t5lpOyhh8FPu/0kF8wNN+1//8DS2oopcHBeFQHGplOkeFyYhIaefpn5Dh+75cDSyN/E2s7YVTQmCWI+Ltsw1S8pv4Ipft/k8b8FZmVFd8mA7MHmZoLffMxoC4aL/JjtRDzisTIsF7qGo3JxLFWJx0I/MnR+lW9bRPeWeGyz5ujIyQrjWA3MEo8FFlBCNeKar0sEkk4ZwkTvfMwatkhZZDMZ9JPuWxCkamwYxXWPbM3D4s+kMh1W06uqOXdtM6DmIR/ivKhJV1Lt+lSHKoNKQ6g/AfxgkOVdqlirKzoKKNJsuL6zd5kZNf/y8y3M1N8AlPmA/K9FvhJsK6Akak36xz9dhua0xfxlB4Wg2qahdu8iEt0sr6Exl9WIvlO/W8xPpv6HhrobUtu0dFsKGxOyWeW2qqZ06bT4lK2DemWO/pjjvi1zCiEVHqKxcxJymtrspI7hAyirXG9wzizZXkgxXu30eUODTgFO33CQmoJnaa435zaIpKlR9vnEYlMvcIXpv0e/rCrDm9Z/AXDNIbgQXCGwjI9zN+bqg5c0FjG/6Ftr9+leTnBewBJwaZN8WLBZFXi59q+zMVEAzhvYki+SZsHFoF6A/BrNnb7J+ZcFFwxsCVBCH551wAmz+T5vyGpUP59QkyKHXwZcaWArDjZ9E7IPUAuYt9LfZMhLOP1MQthS/uaz0OcTyVVw9csMZlkLsCoXK2RtMbhvBZ6tAualOV0P3TpgheC2GZgd3Bab4gpprfTOVguoW2mKOUaWsHTtkdrWA7Ox6le38WJVJgDCPQAAAABJRU5ErkJggg==) no-repeat 50%;
+    background-size: 27px;
+    border: none;
+    height: 48px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 48px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <section class="header">
+            <div class="header_sub_top">
+                <a class="logo" href="index.html">지역경제활동 <strong class="fB">데이터 플랫폼</strong></a>
+                <span class="inp_srh">
+                    <input type="text" placeholder="검색어를 입력하세요"/>
+                    <button type="button"></button>
+                </span>
+            </div>
+        </section>
+        <section class="container">
+   
+        </section>
+        <section class="footer">Copyright Statistics Korea. All rights reserved.</section>
+    </div>
+</body>
+</html>
